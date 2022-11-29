@@ -19,3 +19,17 @@ func TestTranslate(t *testing.T) {
 	}
 	assert.Equal(t, result, known_translation)
 }
+
+func TestEmptyTranslate(t *testing.T) {
+	test_phrase := ""
+	source_lang := "en"
+	target_lang := "es"
+	_, err := Translate(test_phrase, source_lang, target_lang)
+	if err != nil {
+		te, ok := err.(*TextMissingError)
+		message := te.Error()
+		if !ok {
+			t.Errorf("empty translate returned incorrect error. wanted TextEmpty error. got %v", message)
+		}
+	}
+}

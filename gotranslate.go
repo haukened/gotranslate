@@ -9,8 +9,20 @@ import (
 	"net/url"
 )
 
+type TextMissingError struct {
+	error
+}
+
+func (e *TextMissingError) Error() string {
+	return "text was not supplied to translate"
+}
+
 func Translate(text, srcLanguage, dstLanguage string) (string, error) {
 	url := fmt.Sprintf("https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s", srcLanguage, dstLanguage, url.QueryEscape(text))
+
+	if text == "" {
+		return "", &TextMissingError{}
+	}
 
 	r, err := http.Get(url)
 
